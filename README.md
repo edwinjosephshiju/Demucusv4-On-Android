@@ -39,15 +39,22 @@ A Node.js web dashboard and audio console featuring **Meta Demucs v4 (htdemucs)*
 
 ## 🚀 How to Run
 
-### 1. Start the Server
-From Termux in this directory:
+### Option A: Launch in Native Termux:GUI App (Recommended)
+Launch directly into a native Android full-screen window via Termux:GUI:
+```bash
+./demucs-gui.sh
+# or: npm run gui
+# or: python3 app_gui.py
+```
+*(This automatically starts the Node.js backend if not already running and launches the full-screen DaVinci Resolve UI window inside Android.)*
+
+### Option B: Run via Browser / Web Dashboard
+From Termux:
 ```bash
 npm start
 # or: node server.js
 ```
-
-### 2. Access the Dashboard
-Open your browser and navigate to:
+Then open:
 - **On this Android device**: [http://localhost:3000](http://localhost:3000)
 - **From another PC/phone on the same Wi-Fi**: `http://<YOUR_TERMUX_IP>:3000`
 

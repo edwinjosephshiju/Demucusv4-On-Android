@@ -5,6 +5,7 @@
   "main": "index.js",
   "scripts": {
     "start": "node server.js",
+    "gui": "python3 app_gui.py",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
