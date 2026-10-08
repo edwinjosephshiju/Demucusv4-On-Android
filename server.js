@@ -5,8 +5,12 @@ const fs = require('fs');
 const { spawn } = require('child_process');
 const AdmZip = require('adm-zip');
 
+const http = require('http');
+const https = require('https');
+
 const app = express();
 const PORT = process.env.PORT || 3000;
+const HTTPS_PORT = process.env.HTTPS_PORT || 3443;
 
 // Directories
 const BASE_DIR = __dirname;
@@ -427,11 +431,38 @@ app.delete('/api/jobs/:id', (req, res) => {
   }
 });
 
-// Start Express Server
-app.listen(PORT, '0.0.0.0', () => {
+// Start HTTP & HTTPS Servers
+const KEY_PATH = path.join(BASE_DIR, 'server.key');
+const CERT_PATH = path.join(BASE_DIR, 'server.crt');
+
+const httpServer = http.createServer(app);
+httpServer.listen(PORT, '0.0.0.0', () => {
   console.log(`=======================================================`);
   console.log(`  DaVinci Resolve AI Remixer (Demucs v4) Dashboard`);
-  console.log(`  Listening on http://localhost:${PORT}`);
-  console.log(`  Host: Android Termux (ARM64 CPU Engine)`);
+  console.log(`  HTTP:  http://localhost:${PORT}`);
+  console.log(`  Host:  Android Termux (ARM64 CPU Engine)`);
   console.log(`=======================================================`);
 });
+
+// Ensure SSL certificates exist for Termux:GUI WebView
+if (!fs.existsSync(KEY_PATH) || !fs.existsSync(CERT_PATH)) {
+  try {
+    const { execSync } = require('child_process');
+    execSync(`openssl req -nodes -new -x509 -keyout "${KEY_PATH}" -out "${CERT_PATH}" -subj "/CN=127.0.0.1" -days 365`, { stdio: 'ignore' });
+  } catch (e) {}
+}
+
+if (fs.existsSync(KEY_PATH) && fs.existsSync(CERT_PATH)) {
+  try {
+    const sslOptions = {
+      key: fs.readFileSync(KEY_PATH),
+      cert: fs.readFileSync(CERT_PATH)
+    };
+    const httpsServer = https.createServer(sslOptions, app);
+    httpsServer.listen(HTTPS_PORT, '0.0.0.0', () => {
+      console.log(`  HTTPS: https://localhost:${HTTPS_PORT} (for Termux:GUI WebView)`);
+    });
+  } catch (err) {
+    console.error('Failed to start HTTPS listener:', err.message);
+  }
+}

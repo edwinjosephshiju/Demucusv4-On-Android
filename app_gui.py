@@ -18,18 +18,30 @@ except ImportError:
     print("Please install it with: pip install termuxgui")
     sys.exit(1)
 
+import ssl
+
 PORT = 3000
-SERVER_URL = f"http://127.0.0.1:{PORT}"
+HTTPS_PORT = 3443
+SERVER_URL = f"https://127.0.0.1:{HTTPS_PORT}"
 SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
+
+# SSL context that allows local self-signed certificate
+SSL_CTX = ssl._create_unverified_context()
 
 
 def is_server_running():
     try:
         req = urllib.request.Request(f"{SERVER_URL}/api/system", headers={"User-Agent": "TermuxGUI"})
-        with urllib.request.urlopen(req, timeout=1.5) as resp:
+        with urllib.request.urlopen(req, timeout=1.5, context=SSL_CTX) as resp:
             return resp.status == 200
     except Exception:
-        return False
+        # Check HTTP fallback
+        try:
+            req = urllib.request.Request(f"http://127.0.0.1:{PORT}/api/system", headers={"User-Agent": "TermuxGUI"})
+            with urllib.request.urlopen(req, timeout=1.0) as resp:
+                return resp.status == 200
+        except Exception:
+            return False
 
 
 def start_backend_server():
@@ -97,7 +109,14 @@ def launch_gui():
         webview = tg.WebView(activity)
         webview.setdimensions("MATCH_PARENT", "MATCH_PARENT")
 
-        # Load the DaVinci Resolve AI Remixer dashboard
+        # Enable JavaScript and navigation for interactive controls
+        try:
+            webview.allowjavascript(True)
+            webview.allownavigation(True)
+        except Exception as e:
+            print(f"[!] WebView configuration notice: {e}")
+
+        # Load the DaVinci Resolve AI Remixer dashboard via HTTPS (bypasses Android cleartext restrictions)
         print(f"[*] Loading DaVinci Resolve Remixer in Termux:GUI WebView ({SERVER_URL})...")
         webview.loaduri(SERVER_URL)
 

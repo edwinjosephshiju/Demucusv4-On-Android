@@ -5,3 +5,5 @@ outputs/*
 !outputs/.gitkeep
 *.log
 .DS_Store
+*.key
+*.crt
