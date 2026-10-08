@@ -1,0 +1,18 @@
+{
+  "name": "DaVinci Resolve AI Remixer",
+  "short_name": "Resolve Remixer",
+  "description": "DaVinci Resolve Fairlight 4-Stem AI Remixer powered by Demucs v4 on Android Termux",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#0f0f10",
+  "theme_color": "#151517",
+  "orientation": "any",
+  "icons": [
+    {
+      "src": "/icon.svg",
+      "sizes": "192x192 512x512",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}
