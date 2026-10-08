@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <meta name="theme-color" content="#151517">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <title>DaVinci Resolve Studio 21 - AI Music Remixer (Demucs v4)</title>
+  <link rel="stylesheet" href="/css/resolve.css">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><circle cx='35' cy='40' r='25' fill='%23ff3838'/><circle cx='65' cy='40' r='25' fill='%232ecc71'/><circle cx='50' cy='70' r='25' fill='%230984e3'/></svg>">
+</head>
+<body>
+
+  <!-- =========================================================================
+       DaVinci Resolve Studio Top Title Bar & Workspace Tabs
+       ========================================================================= -->
+  <header class="resolve-topbar">
+    <div class="brand-section">
+      <div class="resolve-logo">
+        <div class="logo-petal red"></div>
+        <div class="logo-petal green"></div>
+        <div class="logo-petal blue"></div>
+      </div>
+      <span class="brand-title">DaVinci Resolve Studio 21</span>
+      <span class="brand-subtitle">AI REMIXER</span>
+    </div>
+
+    <div class="system-status">
+      <span class="status-dot"></span>
+      <span id="systemEngine">DEMUCS v4 // TERMUX ARM64</span>
+    </div>
+  </header>
+
+  <!-- =========================================================================
+       Main Application Container
+       ========================================================================= -->
+  <main class="main-container">
+
+    <!-- 1. MEDIA INGEST & SEPARATION INSPECTOR -->
+    <section class="resolve-panel">
+      <div class="panel-header">
+        <span class="panel-title">Track Inspector // AI Music Remixer</span>
+        <div class="panel-actions">
+          <span style="font-size: 10px; color: var(--text-muted); font-family: var(--font-mono);">
+            MODEL: HYBRID DEMUCS v4 (HTDEMUCS)
+          </span>
+        </div>
+      </div>
+
+      <div class="ingest-grid">
+        <!-- Media Dropzone -->
+        <div class="dropzone-container" id="dropzone">
+          <div class="dropzone-icon">⏏</div>
+          <div class="dropzone-title">Upload Audio File</div>
+          <div class="dropzone-desc">Drag & drop WAV, MP3, FLAC, M4A, OGG or click to browse</div>
+          <input type="file" id="fileInput" accept="audio/*,.wav,.mp3,.flac,.m4a,.ogg,.aac" style="display: none;">
+          <div class="file-pill" id="filePill">
+            <span id="fileNameDisplay"></span>
+            <span id="fileSizeDisplay" style="color: var(--text-muted);"></span>
+          </div>
+        </div>
+
+        <!-- Separation Settings & Action -->
+        <div class="config-box">
+          <div class="config-row">
+            <label class="config-label">Stems Target</label>
+            <select class="select-styled" id="stemsSelect" disabled>
+              <option value="4" selected>4 Stems (Vocals, Drums, Bass, Instruments)</option>
+            </select>
+          </div>
+
+          <div class="config-row">
+            <label class="config-label">Demucs Processing Mode</label>
+            <select class="select-styled" id="shiftsSelect">
+              <option value="0" selected>Fast (Termux Mobile 1-Pass)</option>
+              <option value="1">High Fidelity (2-Pass Stabilized)</option>
+            </select>
+          </div>
+
+          <button class="btn-process" id="btnProcess" disabled>
+            <span>Separate Stems</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Render Progress Bar -->
+      <div class="render-progress-section" id="renderProgressSection">
+        <div class="progress-header">
+          <div class="progress-status-text">
+            <div class="progress-spinner"></div>
+            <span id="progressStatusText">Initializing Demucs v4...</span>
+          </div>
+          <div class="progress-percent" id="progressPercent">0%</div>
+        </div>
+        <div class="progress-bar-track">
+          <div class="progress-bar-fill" id="progressBarFill"></div>
+        </div>
+        <div class="render-logs" id="renderLogs"></div>
+      </div>
+    </section>
+
+    <!-- 2. FAIRLIGHT 4-STEM REMIXER CONSOLE (NO COMPLEX TIMELINE, KEEP IT SIMPLE) -->
+    <section class="resolve-panel">
+      <div class="panel-header">
+        <span class="panel-title">Fairlight Studio Console // 4-Stem Remixer</span>
+        <div class="panel-actions">
+          <span id="activeTrackInfo" style="font-size: 10px; color: var(--accent-cyan); font-family: var(--font-mono);">
+            NO ACTIVE PROJECT
+          </span>
+        </div>
+      </div>
+
+      <!-- 4 Channel Strips -->
+      <div class="mixer-rack">
+
+        <!-- STRIP 1: VOCALS -->
+        <div class="channel-strip strip-vocals" data-stem="vocals">
+          <div class="strip-header">
+            <span class="strip-badge">S1</span>
+            <span class="strip-title">Vocals</span>
+          </div>
+          <div class="strip-switches">
+            <button class="resolve-push-btn btn-mute" data-stem="vocals" title="Mute Vocals">M</button>
+            <button class="resolve-push-btn btn-solo" data-stem="vocals" title="Solo Vocals">S</button>
+          </div>
+          <div class="strip-body">
+            <div class="vu-meter-wrap">
+              <div class="vu-meter-bar" id="vu-vocals">
+                <!-- 16 LED Segments generated dynamically -->
+              </div>
+              <span class="vu-scale-label">VU</span>
+            </div>
+            <div class="fader-wrap">
+              <input type="range" class="fader-slider" id="fader-vocals" data-stem="vocals" min="0" max="1.5" step="0.01" value="1.0">
+              <div class="db-readout" id="db-vocals">0.0 dB</div>
+            </div>
+          </div>
+          <div class="strip-footer">
+            <a href="#" class="btn-export-stem" id="export-vocals" download>⬇ Export WAV</a>
+          </div>
+        </div>
+
+        <!-- STRIP 2: DRUMS -->
+        <div class="channel-strip strip-drums" data-stem="drums">
+          <div class="strip-header">
+            <span class="strip-badge">S2</span>
+            <span class="strip-title">Drums</span>
+          </div>
+          <div class="strip-switches">
+            <button class="resolve-push-btn btn-mute" data-stem="drums" title="Mute Drums">M</button>
+            <button class="resolve-push-btn btn-solo" data-stem="drums" title="Solo Drums">S</button>
+          </div>
+          <div class="strip-body">
+            <div class="vu-meter-wrap">
+              <div class="vu-meter-bar" id="vu-drums"></div>
+              <span class="vu-scale-label">VU</span>
+            </div>
+            <div class="fader-wrap">
+              <input type="range" class="fader-slider" id="fader-drums" data-stem="drums" min="0" max="1.5" step="0.01" value="1.0">
+              <div class="db-readout" id="db-drums">0.0 dB</div>
+            </div>
+          </div>
+          <div class="strip-footer">
+            <a href="#" class="btn-export-stem" id="export-drums" download>⬇ Export WAV</a>
+          </div>
+        </div>
+
+        <!-- STRIP 3: BASS -->
+        <div class="channel-strip strip-bass" data-stem="bass">
+          <div class="strip-header">
+            <span class="strip-badge">S3</span>
+            <span class="strip-title">Bass</span>
+          </div>
+          <div class="strip-switches">
+            <button class="resolve-push-btn btn-mute" data-stem="bass" title="Mute Bass">M</button>
+            <button class="resolve-push-btn btn-solo" data-stem="bass" title="Solo Bass">S</button>
+          </div>
+          <div class="strip-body">
+            <div class="vu-meter-wrap">
+              <div class="vu-meter-bar" id="vu-bass"></div>
+              <span class="vu-scale-label">VU</span>
+            </div>
+            <div class="fader-wrap">
+              <input type="range" class="fader-slider" id="fader-bass" data-stem="bass" min="0" max="1.5" step="0.01" value="1.0">
+              <div class="db-readout" id="db-bass">0.0 dB</div>
+            </div>
+          </div>
+          <div class="strip-footer">
+            <a href="#" class="btn-export-stem" id="export-bass" download>⬇ Export WAV</a>
+          </div>
+        </div>
+
+        <!-- STRIP 4: INSTRUMENTS (OTHER) -->
+        <div class="channel-strip strip-other" data-stem="other">
+          <div class="strip-header">
+            <span class="strip-badge">S4</span>
+            <span class="strip-title">Instruments</span>
+          </div>
+          <div class="strip-switches">
+            <button class="resolve-push-btn btn-mute" data-stem="other" title="Mute Instruments">M</button>
+            <button class="resolve-push-btn btn-solo" data-stem="other" title="Solo Instruments">S</button>
+          </div>
+          <div class="strip-body">
+            <div class="vu-meter-wrap">
+              <div class="vu-meter-bar" id="vu-other"></div>
+              <span class="vu-scale-label">VU</span>
+            </div>
+            <div class="fader-wrap">
+              <input type="range" class="fader-slider" id="fader-other" data-stem="other" min="0" max="1.5" step="0.01" value="1.0">
+              <div class="db-readout" id="db-other">0.0 dB</div>
+            </div>
+          </div>
+          <div class="strip-footer">
+            <a href="#" class="btn-export-stem" id="export-other" download>⬇ Export WAV</a>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- 3. MASTER TRANSPORT & MONITORING BAR (SIMPLE SEEKING, NO MULTI-TRACK DAW TIMELINE) -->
+      <div class="master-transport-panel">
+        <!-- Scrubbing row -->
+        <div class="scrubber-row">
+          <div class="timecode-display" id="timecodeDisplay">00:00:00:00</div>
+          <input type="range" class="scrubber-slider" id="scrubberSlider" min="0" max="100" step="0.1" value="0">
+          <div class="duration-display" id="durationDisplay">00:00</div>
+        </div>
+
+        <!-- Controls row -->
+        <div class="transport-controls-row">
+          <!-- Playback buttons -->
+          <div class="transport-buttons-group">
+            <button class="transport-btn" id="btnReturnZero" title="Return to Start">|◀</button>
+            <button class="transport-btn btn-play" id="btnPlay" title="Play / Pause">▶</button>
+            <button class="transport-btn" id="btnStop" title="Stop">■</button>
+            <button class="transport-btn btn-loop" id="btnLoop" title="Loop Playback">🔁</button>
+          </div>
+
+          <!-- Master Volume -->
+          <div class="master-fader-group">
+            <span class="master-label">Master</span>
+            <input type="range" class="master-slider" id="masterVolumeSlider" min="0" max="1.5" step="0.01" value="1.0">
+            <span class="db-readout" id="masterDbReadout">0.0 dB</span>
+          </div>
+
+          <!-- Master Actions -->
+          <div class="master-actions-group">
+            <button class="btn-reset-mix" id="btnResetMix" title="Reset all faders and unmute">Reset Mix</button>
+            <a href="#" class="btn-zip-download" id="btnDownloadAll" style="display: none;">
+              ⬇ Download All (.ZIP)
+            </a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+
+  </main>
+
+  <!-- =========================================================================
+       Footer
+       ========================================================================= -->
+  <footer class="resolve-footer">
+    <span>ENGINE: META DEMUCS v4 (HTDEMUCS) &bull; WEB AUDIO API</span>
+    <span>BLACKMAGIC DESIGN DAVINCI RESOLVE THEME &bull; TERMUX ARM64</span>
+  </footer>
+
+  <!-- Scripts -->
+  <script src="/js/audio.js"></script>
+  <script src="/js/app.js"></script>
+</body>
+</html>

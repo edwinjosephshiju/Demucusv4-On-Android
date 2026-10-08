@@ -1,0 +1,996 @@
+/* ==========================================================================
+   DaVinci Resolve Studio 21 - Fairlight AI Music Remixer
+   Authentic Dark Industrial Resolve & Fairlight Design System
+   ========================================================================== */
+
+:root {
+  --bg-darkest: #0f0f10;
+  --bg-darker: #151517;
+  --bg-panel: #1e1e21;
+  --bg-panel-elevated: #26262a;
+  --bg-inset: #111113;
+
+  --border-subtle: #2d2d32;
+  --border-light: #3a3a40;
+  --border-focus: #555560;
+
+  --text-primary: #e6e6e8;
+  --text-secondary: #9a9aa0;
+  --text-muted: #65656c;
+  --text-dim: #44444a;
+
+  --accent-cyan: #00c0f0;
+  --accent-orange: #ff7a00;
+  --accent-green: #2ecc71;
+  --accent-purple: #9b59b6;
+  --accent-red: #e74c3c;
+  --accent-amber: #f39c12;
+
+  --btn-default-bg: linear-gradient(180deg, #323236 0%, #242427 100%);
+  --btn-active-bg: linear-gradient(180deg, #1d1d20 0%, #2a2a2e 100%);
+
+  --font-ui: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  --font-mono: "SF Mono", "Roboto Mono", Consolas, Menlo, Monaco, monospace;
+
+  /* Safe Area Insets for Modern Android (Cutouts, Gestures, Tall Ratios) */
+  --safe-top: env(safe-area-inset-top, 0px);
+  --safe-bottom: env(safe-area-inset-bottom, 0px);
+  --safe-left: env(safe-area-inset-left, 0px);
+  --safe-right: env(safe-area-inset-right, 0px);
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  user-select: none;
+  -webkit-user-select: none;
+  -webkit-tap-highlight-color: transparent;
+}
+
+body {
+  background-color: var(--bg-darkest);
+  color: var(--text-primary);
+  font-family: var(--font-ui);
+  font-size: 12px;
+  line-height: 1.4;
+  letter-spacing: 0.2px;
+  min-height: 100vh;
+  min-height: 100dvh;
+  display: flex;
+  flex-direction: column;
+  overflow-x: hidden;
+  touch-action: manipulation;
+}
+
+/* ==========================================================================
+   Resolve Top Title Bar
+   ========================================================================== */
+
+.resolve-topbar {
+  background-color: var(--bg-darker);
+  border-bottom: 1px solid var(--border-subtle);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: max(8px, var(--safe-top)) max(12px, var(--safe-right)) 8px max(12px, var(--safe-left));
+  min-height: 44px;
+}
+
+.brand-section {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.resolve-logo {
+  display: flex;
+  align-items: center;
+  gap: 3px;
+  flex-shrink: 0;
+}
+
+.logo-petal {
+  width: 7px;
+  height: 14px;
+  border-radius: 4px;
+}
+.logo-petal.red { background: #ff3838; transform: rotate(-15deg); }
+.logo-petal.green { background: #2ecc71; }
+.logo-petal.blue { background: #0984e3; transform: rotate(15deg); }
+
+.brand-title {
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 1.2px;
+  color: #f1f2f6;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.brand-subtitle {
+  font-size: 9px;
+  font-weight: 600;
+  letter-spacing: 0.8px;
+  color: var(--accent-orange);
+  background: rgba(255, 122, 0, 0.12);
+  padding: 2px 5px;
+  border-radius: 2px;
+  border: 1px solid rgba(255, 122, 0, 0.3);
+  white-space: nowrap;
+}
+
+.system-status {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 10px;
+  color: var(--text-secondary);
+  font-family: var(--font-mono);
+  white-space: nowrap;
+}
+
+.status-dot {
+  width: 7px;
+  height: 7px;
+  background-color: #2ed573;
+  border-radius: 50%;
+  box-shadow: 0 0 6px #2ed573;
+  flex-shrink: 0;
+}
+
+/* ==========================================================================
+   Main Application Container
+   ========================================================================== */
+
+.main-container {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  padding: 10px max(10px, var(--safe-right)) 10px max(10px, var(--safe-left));
+  gap: 10px;
+  max-width: 1380px;
+  width: 100%;
+  margin: 0 auto;
+}
+
+/* Resolve Panel Card */
+.resolve-panel {
+  background-color: var(--bg-panel);
+  border: 1px solid var(--border-subtle);
+  border-radius: 4px;
+  overflow: hidden;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.35);
+}
+
+.panel-header {
+  background-color: var(--bg-darker);
+  border-bottom: 1px solid var(--border-subtle);
+  padding: 8px 12px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.panel-title {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 1.2px;
+  text-transform: uppercase;
+  color: var(--text-primary);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.panel-title::before {
+  content: "";
+  display: inline-block;
+  width: 3px;
+  height: 11px;
+  background-color: var(--accent-cyan);
+  border-radius: 1px;
+}
+
+.panel-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+/* ==========================================================================
+   Inspector / File Ingest & Separation Config Section
+   ========================================================================== */
+
+.ingest-grid {
+  display: grid;
+  grid-template-columns: 1fr 340px;
+  gap: 12px;
+  padding: 14px;
+}
+
+@media (max-width: 860px) {
+  .ingest-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.dropzone-container {
+  border: 1px dashed var(--border-light);
+  background-color: var(--bg-inset);
+  border-radius: 4px;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  min-height: 140px;
+  text-align: center;
+}
+
+.dropzone-container:hover, .dropzone-container.drag-over {
+  border-color: var(--accent-cyan);
+  background-color: rgba(0, 192, 240, 0.04);
+}
+
+.dropzone-icon {
+  font-size: 28px;
+  color: var(--accent-cyan);
+  opacity: 0.85;
+}
+
+.dropzone-title {
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0.8px;
+  color: var(--text-primary);
+  text-transform: uppercase;
+}
+
+.dropzone-desc {
+  font-size: 11px;
+  color: var(--text-secondary);
+}
+
+.file-pill {
+  display: none;
+  background-color: var(--bg-panel-elevated);
+  border: 1px solid var(--border-light);
+  padding: 6px 12px;
+  border-radius: 3px;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--accent-cyan);
+  align-items: center;
+  gap: 8px;
+}
+
+.file-pill.visible {
+  display: flex;
+}
+
+/* Configuration Sidebar */
+.config-box {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  background-color: var(--bg-darker);
+  border: 1px solid var(--border-subtle);
+  border-radius: 4px;
+  padding: 12px;
+}
+
+.config-row {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.config-label {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 1px;
+  color: var(--text-muted);
+  text-transform: uppercase;
+}
+
+.select-styled {
+  background-color: var(--bg-inset);
+  color: var(--text-primary);
+  border: 1px solid var(--border-light);
+  padding: 6px 8px;
+  border-radius: 3px;
+  font-size: 11px;
+  font-family: var(--font-ui);
+  outline: none;
+  cursor: pointer;
+}
+
+.select-styled:focus {
+  border-color: var(--accent-cyan);
+}
+
+.btn-process {
+  background: linear-gradient(180deg, #ff851b 0%, #e65100 100%);
+  color: #fff;
+  border: 1px solid #ff9f43;
+  padding: 10px 14px;
+  border-radius: 3px;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 1.2px;
+  text-transform: uppercase;
+  cursor: pointer;
+  box-shadow: 0 2px 6px rgba(230, 81, 0, 0.4);
+  transition: all 0.15s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  margin-top: 4px;
+}
+
+.btn-process:hover:not(:disabled) {
+  filter: brightness(1.1);
+  box-shadow: 0 2px 10px rgba(255, 133, 27, 0.6);
+}
+
+.btn-process:active:not(:disabled) {
+  transform: translateY(1px);
+}
+
+.btn-process:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+  filter: grayscale(0.8);
+}
+
+/* ==========================================================================
+   Separation Render Progress Bar
+   ========================================================================== */
+
+.render-progress-section {
+  display: none;
+  padding: 14px;
+  background-color: var(--bg-darker);
+  border-top: 1px solid var(--border-subtle);
+  flex-direction: column;
+  gap: 8px;
+}
+
+.render-progress-section.visible {
+  display: flex;
+}
+
+.progress-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 11px;
+  font-family: var(--font-mono);
+}
+
+.progress-status-text {
+  color: var(--accent-cyan);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.progress-spinner {
+  width: 12px;
+  height: 12px;
+  border: 2px solid var(--accent-cyan);
+  border-top-color: transparent;
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+.progress-percent {
+  color: var(--accent-orange);
+  font-weight: 700;
+}
+
+.progress-bar-track {
+  width: 100%;
+  height: 10px;
+  background-color: var(--bg-inset);
+  border: 1px solid var(--border-subtle);
+  border-radius: 2px;
+  overflow: hidden;
+  position: relative;
+}
+
+.progress-bar-fill {
+  width: 0%;
+  height: 100%;
+  background: linear-gradient(90deg, #ff7a00, #ffae19);
+  transition: width 0.3s ease;
+  box-shadow: 0 0 8px rgba(255, 122, 0, 0.6);
+}
+
+.render-logs {
+  background-color: var(--bg-inset);
+  border: 1px solid var(--border-subtle);
+  border-radius: 3px;
+  padding: 8px;
+  font-family: var(--font-mono);
+  font-size: 10px;
+  color: var(--text-muted);
+  max-height: 80px;
+  overflow-y: auto;
+  white-space: pre-wrap;
+  user-select: text;
+}
+
+/* ==========================================================================
+   4-Stem Fairlight Remixer Rack (NO TIMELINE, SIMPLE & ELEGANT)
+   ========================================================================== */
+
+.mixer-rack {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 12px;
+  padding: 14px;
+  background-color: var(--bg-darker);
+}
+
+@media (max-width: 860px) {
+  .mixer-rack {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 8px;
+    padding: 8px;
+  }
+}
+
+/* Individual Channel Strip */
+.channel-strip {
+  background-color: var(--bg-panel);
+  border: 1px solid var(--border-subtle);
+  border-radius: 4px;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.05), 0 2px 6px rgba(0, 0, 0, 0.4);
+  transition: border-color 0.15s ease;
+}
+
+.channel-strip:hover {
+  border-color: var(--border-light);
+}
+
+/* Color Identity Header */
+.strip-header {
+  padding: 8px 10px;
+  background-color: var(--bg-darker);
+  border-bottom: 2px solid #555;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.strip-vocals .strip-header { border-bottom-color: var(--accent-cyan); }
+.strip-drums .strip-header { border-bottom-color: var(--accent-orange); }
+.strip-bass .strip-header { border-bottom-color: var(--accent-purple); }
+.strip-other .strip-header { border-bottom-color: var(--accent-green); }
+
+.strip-badge {
+  font-size: 9px;
+  font-weight: 700;
+  font-family: var(--font-mono);
+  background-color: var(--bg-inset);
+  color: var(--text-secondary);
+  padding: 2px 5px;
+  border-radius: 2px;
+  border: 1px solid var(--border-subtle);
+}
+
+.strip-title {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+}
+
+.strip-vocals .strip-title { color: var(--accent-cyan); }
+.strip-drums .strip-title { color: var(--accent-orange); }
+.strip-bass .strip-title { color: var(--accent-purple); }
+.strip-other .strip-title { color: var(--accent-green); }
+
+/* Control Well (Mute / Solo buttons) */
+.strip-switches {
+  display: flex;
+  gap: 8px;
+  padding: 10px;
+  background-color: var(--bg-inset);
+  border-bottom: 1px solid var(--border-subtle);
+  justify-content: center;
+}
+
+/* Resolve Push Button: Mute & Solo */
+.resolve-push-btn {
+  min-width: 44px;
+  width: 48px;
+  height: 38px;
+  border-radius: 3px;
+  border: 1px solid #38383c;
+  background: var(--btn-default-bg);
+  color: #72727a;
+  font-size: 13px;
+  font-weight: 800;
+  font-family: var(--font-ui);
+  letter-spacing: 0.5px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.1), 0 2px 3px rgba(0, 0, 0, 0.4);
+  transition: all 0.1s ease;
+  touch-action: manipulation;
+}
+
+.resolve-push-btn:active {
+  box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.6);
+  transform: translateY(1px);
+}
+
+/* MUTE ACTIVE: DaVinci Resolve Glowing Red */
+.btn-mute.active {
+  background: linear-gradient(180deg, #ff4d4d 0%, #c0392b 100%);
+  border-color: #ff6b6b;
+  color: #ffffff;
+  box-shadow: 0 0 10px rgba(231, 76, 60, 0.8), inset 0 1px 0 rgba(255, 255, 255, 0.3);
+  text-shadow: 0 0 4px rgba(0, 0, 0, 0.8);
+}
+
+/* SOLO ACTIVE: DaVinci Resolve Glowing Amber / Yellow */
+.btn-solo.active {
+  background: linear-gradient(180deg, #f1c40f 0%, #d35400 100%);
+  border-color: #f39c12;
+  color: #111111;
+  box-shadow: 0 0 10px rgba(241, 196, 15, 0.8), inset 0 1px 0 rgba(255, 255, 255, 0.4);
+}
+
+/* Meter & Fader Section */
+.strip-body {
+  padding: 12px 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  min-height: 180px;
+}
+
+/* Vertical Fairlight LED VU Meter */
+.vu-meter-wrap {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+}
+
+.vu-meter-bar {
+  width: 12px;
+  height: 140px;
+  background-color: #0b0b0d;
+  border: 1px solid #29292e;
+  border-radius: 2px;
+  display: flex;
+  flex-direction: column-reverse;
+  padding: 2px;
+  gap: 2px;
+  overflow: hidden;
+}
+
+.vu-led-segment {
+  width: 100%;
+  height: 5px;
+  background-color: #1c1c20;
+  border-radius: 1px;
+  transition: background-color 0.05s ease, box-shadow 0.05s ease;
+}
+
+/* Segment colors when activated */
+.vu-led-segment.green.active {
+  background-color: #2ed573;
+  box-shadow: 0 0 4px #2ed573;
+}
+
+.vu-led-segment.yellow.active {
+  background-color: #ffa502;
+  box-shadow: 0 0 4px #ffa502;
+}
+
+.vu-led-segment.red.active {
+  background-color: #ff4757;
+  box-shadow: 0 0 6px #ff4757;
+}
+
+.vu-scale-label {
+  font-size: 8px;
+  font-family: var(--font-mono);
+  color: var(--text-dim);
+}
+
+/* Vertical Fader Track */
+.fader-wrap {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+}
+
+.fader-slider {
+  writing-mode: vertical-lr;
+  direction: rtl;
+  width: 32px;
+  height: 140px;
+  appearance: none;
+  -webkit-appearance: none;
+  background: #111114;
+  border: 1px solid #2a2a30;
+  border-radius: 3px;
+  outline: none;
+  cursor: pointer;
+  padding: 0;
+  touch-action: pan-x;
+}
+
+.fader-slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 36px;
+  height: 20px;
+  background: linear-gradient(180deg, #575760 0%, #303036 50%, #1e1e22 100%);
+  border: 1px solid #70707a;
+  border-radius: 2px;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.3), 0 2px 4px rgba(0, 0, 0, 0.7);
+  cursor: pointer;
+}
+
+.db-readout {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  color: var(--text-primary);
+  background-color: var(--bg-inset);
+  border: 1px solid var(--border-subtle);
+  padding: 2px 5px;
+  border-radius: 2px;
+  min-width: 44px;
+  text-align: center;
+}
+
+/* Strip Footer / Export Button */
+.strip-footer {
+  padding: 8px 8px;
+  background-color: var(--bg-darker);
+  border-top: 1px solid var(--border-subtle);
+  display: flex;
+  justify-content: center;
+}
+
+.btn-export-stem {
+  background: var(--btn-default-bg);
+  border: 1px solid var(--border-light);
+  color: var(--text-secondary);
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.6px;
+  padding: 8px 6px;
+  min-height: 34px;
+  border-radius: 2px;
+  cursor: pointer;
+  text-transform: uppercase;
+  transition: all 0.15s ease;
+  width: 100%;
+  text-align: center;
+  text-decoration: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  touch-action: manipulation;
+}
+
+.btn-export-stem:hover {
+  color: var(--text-primary);
+  border-color: var(--text-secondary);
+  background: var(--btn-active-bg);
+}
+
+/* ==========================================================================
+   Master Transport & Control Console (No Timeline, High Usability)
+   ========================================================================== */
+
+.master-transport-panel {
+  background-color: var(--bg-darker);
+  border: 1px solid var(--border-subtle);
+  border-radius: 4px;
+  padding: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.4);
+}
+
+/* High Precision Scrubber */
+.scrubber-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.timecode-display {
+  background-color: #08080a;
+  border: 1px solid #28282e;
+  color: #ff9f43;
+  font-family: var(--font-mono);
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 1.2px;
+  padding: 5px 8px;
+  border-radius: 3px;
+  box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.8);
+  min-width: 86px;
+  text-align: center;
+  flex-shrink: 0;
+}
+
+.scrubber-slider {
+  flex: 1;
+  appearance: none;
+  -webkit-appearance: none;
+  height: 12px;
+  background-color: var(--bg-inset);
+  border: 1px solid var(--border-subtle);
+  border-radius: 3px;
+  outline: none;
+  cursor: pointer;
+  touch-action: none;
+}
+
+.scrubber-slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 20px;
+  height: 26px;
+  background: linear-gradient(180deg, #ff7a00 0%, #d35400 100%);
+  border: 1px solid #ff9f43;
+  border-radius: 2px;
+  box-shadow: 0 0 6px rgba(255, 122, 0, 0.6);
+  cursor: pointer;
+}
+
+.duration-display {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--text-muted);
+  min-width: 44px;
+  text-align: right;
+  flex-shrink: 0;
+}
+
+/* Transport Controls Row */
+.transport-controls-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.transport-buttons-group {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.transport-btn {
+  width: 44px;
+  height: 38px;
+  border-radius: 3px;
+  border: 1px solid var(--border-light);
+  background: var(--btn-default-bg);
+  color: var(--text-primary);
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.1s ease;
+  touch-action: manipulation;
+}
+
+.transport-btn:hover {
+  border-color: var(--border-focus);
+  background: var(--btn-active-bg);
+}
+
+.transport-btn:active {
+  transform: translateY(1px);
+}
+
+.transport-btn.btn-play {
+  width: 56px;
+  font-size: 15px;
+  background: linear-gradient(180deg, #00b4d8 0%, #0077b6 100%);
+  border-color: #90e0ef;
+  color: #fff;
+  box-shadow: 0 0 8px rgba(0, 180, 216, 0.4);
+}
+
+.transport-btn.btn-play.playing {
+  background: linear-gradient(180deg, #2ecc71 0%, #27ae60 100%);
+  border-color: #55efc4;
+}
+
+.transport-btn.btn-loop.active {
+  background: linear-gradient(180deg, #f39c12 0%, #d35400 100%);
+  color: #fff;
+  border-color: #f1c40f;
+}
+
+/* Master Volume & Meter */
+.master-fader-group {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.master-label {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 1px;
+  color: var(--text-muted);
+  text-transform: uppercase;
+}
+
+.master-slider {
+  width: 100px;
+  appearance: none;
+  -webkit-appearance: none;
+  height: 8px;
+  background-color: var(--bg-inset);
+  border: 1px solid var(--border-subtle);
+  border-radius: 2px;
+  outline: none;
+  cursor: pointer;
+  touch-action: none;
+}
+
+.master-slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 18px;
+  height: 18px;
+  background: #bbb;
+  border: 1px solid #fff;
+  border-radius: 50%;
+  cursor: pointer;
+}
+
+/* Master Actions */
+.master-actions-group {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.btn-zip-download {
+  background: linear-gradient(180deg, #27ae60 0%, #1e824c 100%);
+  border: 1px solid #2ecc71;
+  color: #fff;
+  padding: 8px 12px;
+  min-height: 38px;
+  border-radius: 3px;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.8px;
+  text-transform: uppercase;
+  cursor: pointer;
+  text-decoration: none;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  box-shadow: 0 2px 6px rgba(39, 174, 96, 0.4);
+  touch-action: manipulation;
+}
+
+.btn-zip-download:hover {
+  filter: brightness(1.1);
+}
+
+.btn-reset-mix {
+  background: var(--btn-default-bg);
+  border: 1px solid var(--border-light);
+  color: var(--text-secondary);
+  padding: 8px 12px;
+  min-height: 38px;
+  border-radius: 3px;
+  font-size: 11px;
+  font-weight: 600;
+  cursor: pointer;
+  text-transform: uppercase;
+  touch-action: manipulation;
+}
+
+.btn-reset-mix:hover {
+  color: var(--text-primary);
+  border-color: var(--text-secondary);
+}
+
+/* ==========================================================================
+   Responsive Adaptations for Modern Android Aspect Ratios (19.5:9, 20:9, 21:9)
+   ========================================================================== */
+
+@media (max-width: 600px) {
+  .brand-title {
+    font-size: 11px;
+    letter-spacing: 0.8px;
+  }
+  .brand-subtitle {
+    display: none;
+  }
+  .system-status {
+    font-size: 8.5px;
+  }
+  .ingest-grid {
+    grid-template-columns: 1fr;
+    padding: 10px;
+    gap: 8px;
+  }
+  .dropzone-container {
+    padding: 14px;
+    min-height: 110px;
+  }
+  .btn-process {
+    min-height: 42px;
+  }
+  .transport-controls-row {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 10px;
+  }
+  .transport-buttons-group {
+    justify-content: center;
+    width: 100%;
+  }
+  .master-fader-group {
+    justify-content: space-between;
+    width: 100%;
+  }
+  .master-slider {
+    flex: 1;
+    max-width: none;
+  }
+  .master-actions-group {
+    width: 100%;
+  }
+  .btn-zip-download, .btn-reset-mix {
+    flex: 1;
+    justify-content: center;
+    text-align: center;
+  }
+}
+
+/* ==========================================================================
+   Footer
+   ========================================================================== */
+
+.resolve-footer {
+  background-color: var(--bg-darker);
+  border-top: 1px solid var(--border-subtle);
+  padding: 8px max(14px, var(--safe-right)) max(10px, var(--safe-bottom)) max(14px, var(--safe-left));
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 6px;
+  font-size: 9px;
+  color: var(--text-muted);
+  font-family: var(--font-mono);
+}
